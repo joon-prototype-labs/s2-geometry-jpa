@@ -4,7 +4,10 @@ import com.google.common.geometry.S2CellId
 import com.google.common.geometry.S2LatLng
 import jakarta.persistence.*
 
-@Table(name = "t_location")
+@Table(name = "t_location", indexes = [
+    Index(name = "idx_lat_lng", columnList = "latitude, longitude"),
+    Index(name = "idx_s2CellId", columnList = "s2CellId")
+])
 @Entity
 class LocationEntity {
     @Id
