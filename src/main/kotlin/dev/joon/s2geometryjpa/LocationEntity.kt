@@ -2,22 +2,20 @@ package dev.joon.s2geometryjpa
 
 import com.google.common.geometry.S2CellId
 import com.google.common.geometry.S2LatLng
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import jakarta.persistence.*
 
+@Table(name = "t_location")
 @Entity
 class LocationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long = 0
+    val id: Long = 0
 
-    private val latitude: Double
+    val latitude: Double
 
-    private val longitude: Double
+    val longitude: Double
 
-    private val s2CellId: Long
+    val s2CellId: Long
 
     constructor(latitude: Double, longitude: Double) {
         this.latitude = latitude
