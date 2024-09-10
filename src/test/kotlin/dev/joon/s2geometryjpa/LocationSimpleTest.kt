@@ -2,12 +2,11 @@ package dev.joon.s2geometryjpa
 
 import com.google.common.geometry.S2CellId
 import com.google.common.geometry.S2LatLng
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.annotation.Import
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.transaction.annotation.Transactional
@@ -17,7 +16,7 @@ import org.testcontainers.utility.DockerImageName
 
 @SpringBootTest
 @Transactional
-class LocationRepositoryTest {
+class LocationSimpleTest {
 
     companion object {
         @Container
@@ -45,7 +44,7 @@ class LocationRepositoryTest {
 
     @BeforeEach
     fun setUp() {
-        // 테스트 데이터를 저장
+        // 테스트용으로 작은 데이터 세트를 설정
         val locations = listOf(
             LocationEntity(37.7749, -122.4194),  // 샌프란시스코
             LocationEntity(34.0522, -118.2437),  // 로스앤젤레스
@@ -57,27 +56,24 @@ class LocationRepositoryTest {
 
     @Test
     fun `S2CellId 범위로 사용자 검색`() {
-        // 샌프란시스코 근처 사용자 조회
         val center = S2CellId.fromLatLng(S2LatLng.fromDegrees(37.7749, -122.4194))
         val minCellId = center.prev().id()
         val maxCellId = center.next().id()
 
         val nearbyLocations = locationRepository.findLocationsWithinS2CellRange(minCellId, maxCellId)
-        assertEquals(1, nearbyLocations.size)
-        assertEquals(37.7749, nearbyLocations[0].latitude)
+        Assertions.assertEquals(1, nearbyLocations.size)
+        Assertions.assertEquals(37.7749, nearbyLocations[0].latitude)
     }
 
     @Test
     fun `경계 범위로 사용자 검색`() {
-        // 샌프란시스코 근처 경계 범위 내 사용자 조회
         val latMin = 37.0
         val latMax = 38.0
         val lngMin = -123.0
         val lngMax = -122.0
 
         val nearbyLocations = locationRepository.findWithinBoundingBox(latMin, latMax, lngMin, lngMax)
-        assertEquals(1, nearbyLocations.size)
-        assertEquals(37.7749, nearbyLocations[0].latitude)
+        Assertions.assertEquals(1, nearbyLocations.size)
+        Assertions.assertEquals(37.7749, nearbyLocations[0].latitude)
     }
-
 }
